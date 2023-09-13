@@ -1,0 +1,17 @@
+# version is used for docker-compose syntax
+version: "3.9"
+
+services:
+  app:  # the service that will run the dockerfile
+    build:
+      context: .  # we want to build the dockerfile in the current dir
+      args:
+        - DEV=true   # if we're running this using docker compose, which is only used now for development, set a build argument called dev and set value to true
+    ports:
+      - "8000:8000"  # maps port 8000 of local machine to port 8000 inside docker container
+    volumes:
+      - ./app:/app  # maps directory from system into docker container.
+                    # This is used to reflect the local changes, realtime in the container so that
+                    # it's not necessary to rebuild the container
+    command : >
+      sh -c "python manage.py runserver 0.0.0.0:8000"
