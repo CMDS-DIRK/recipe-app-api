@@ -1,0 +1,22 @@
+---
+# name of the stage
+name: Checks
+# trigger definition, runs on every push
+on: [push]
+
+jobs:
+  test-lint:  # job-id, to be used for job order setting
+    name: Test and Lint
+    runs-on: ubuntu-20.04 # runner selection
+    steps: # different things that run in this job
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Checkout  # runs when first step is finished successfully
+        uses: actions/checkout@v2   # a premade action from gitlab for checking out the code, needed to use with the test
+      - name: Test
+        run: docker compose run --rm app sh -c "python manage.py test"   # docker compose is installed by default on the ubuntu runner
+      - name: Lint
+        run: docker compose run --rm app sh -c "flake8"
