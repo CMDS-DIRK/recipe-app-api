@@ -17,6 +17,6 @@ jobs:
       - name: Checkout  # runs when first step is finished successfully
         uses: actions/checkout@v2   # a premade action from gitlab for checking out the code, needed to use with the test
       - name: Test
-        run: docker compose run --rm app sh -c "python manage.py test"   # docker compose is installed by default on the ubuntu runner
+        run: docker compose run --rm app sh -c "python manage.py wait_for_db && python manage.py test"   # docker compose is installed by default on the ubuntu runner
       - name: Lint
         run: docker compose run --rm app sh -c "flake8"
