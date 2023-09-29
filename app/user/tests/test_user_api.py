@@ -54,7 +54,7 @@ class PublicUserApiTests(TestCase):
         payload = {
             'email': 'test@example.com',
             'password': 'pw',
-            'name': 'Test name',
+            'name': 'Test Name',
         }
         res = self.client.post(CREATE_USER_URL, payload)
 
@@ -63,3 +63,16 @@ class PublicUserApiTests(TestCase):
             email=payload['email']
         ).exists()
         self.assertFalse(user_exists)
+
+    def test_new_user_not_staff(self):
+        """Test that a new user does not have staff status."""
+        payload = {
+            'email': 'test@example.com',
+            'password': 'testpass123',
+            'name': 'Test Name',
+        }
+        res = self.client.post(CREATE_USER_URL, payload)
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        user = get_user_model().objects.get(email=payload['email'])
+        self.assertTrue(user.check_password(payload['password']))
+        self.assertEqual(user.is_staff, False)
