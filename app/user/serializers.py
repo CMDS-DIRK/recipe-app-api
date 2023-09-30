@@ -30,11 +30,13 @@ class AuthTokenSerializer(serializers.Serializer):
         style={'input_type': 'password'},
         trim_whitespace=False
     )
+
     def validate(self, attrs):
         """Validate and authenticate the user.
         This is called at the validation stage of the view,
-        when data is posted to the view, it's going to pass it to the serializer,
-        and then it's going to call validate method to validate that the data is correct"""
+        when data is posted to the view, it's going to pass it to
+        the serializer, and then it's going to call the
+        validate method to validate that the data is correct"""
         email = attrs.get('email')
         password = attrs.get('password')
         user = authenticate(
@@ -44,7 +46,9 @@ class AuthTokenSerializer(serializers.Serializer):
         )
         if not user:
             msg = _('unable to authenticate with provided credentials.')
-            raise serializers.ValidationError(msg, code='authorization')  # this will be translated by the view to a http 400 bad request and include the message
+            # this will be translated by the view to a http 400 bad request
+            # and include the message
+            raise serializers.ValidationError(msg, code='authorization')
 
         attrs['user'] = user
         return attrs

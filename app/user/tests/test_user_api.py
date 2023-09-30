@@ -12,6 +12,7 @@ from rest_framework import status
 CREATE_USER_URL = reverse('user:create')
 TOKEN_URL = reverse('user:token')
 
+
 def create_user(**params):
     """Helper function to create and return a new user."""
     return get_user_model().objects.create_user(**params)
@@ -105,8 +106,6 @@ class PublicUserApiTests(TestCase):
         }
 
         create_user(**user_details)
-
-
         payload = {
             'email': user_details['email'],
             'password': 'invalid_password123',
