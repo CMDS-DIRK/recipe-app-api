@@ -16,11 +16,31 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ['email', 'password', 'name']
-        extra_kwargs = {'password': {'write_only': True, 'min_length': 5}}
+        extra_kwargs = {
+            'password': {'write_only': True, 'min_length': 5},
+            'name': {'max_length': 20},
+            }
 
     def create(self, validated_data):
         """Create and return a user with encrypted password."""
         return get_user_model().objects.create_user(**validated_data)
+
+    def update(self, instance, validated_data):
+        """Update and return user."""
+        password = validated_data.pop('password', None)
+        # call the update method on the model serializer base class
+        # that is the one that is provided by the model serializer
+        # it will perform all the steps for updating the object.
+        # Used to leverage the existing logic from the model serializer
+        # And it will only override and change what we need to change
+        # it prevents us from reinventing the wheel.
+        user = super().update(instance, validated_data)
+
+        if password:
+            user.set_password(password)
+            user.save()
+
+        return user
 
 
 class AuthTokenSerializer(serializers.Serializer):
