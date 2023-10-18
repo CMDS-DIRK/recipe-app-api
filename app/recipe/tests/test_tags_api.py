@@ -14,6 +14,7 @@ from recipe.serializers import TagSerializer
 
 TAGS_URL = reverse('recipe:tag-list')
 
+
 def create_user(email="user@example.com", password='testpass123'):
     """Create and return a new user."""
     return get_user_model().objects.create_user(email, password)
@@ -75,5 +76,4 @@ class PrivateTagsAPITests(TestCase):
         self.assertEqual(tags.last().user_id, self.user.id)
         self.assertEqual(tags.first().id, tag_1.id)
         self.assertEqual(tags.last().id, tag_2.id)
-
         self.assertEqual(res.data, serializer.data)
